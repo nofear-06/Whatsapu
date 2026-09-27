@@ -58,14 +58,6 @@ export const ChatDetailView: React.FC<ChatDetailViewProps> = ({
     setInputText('');
     setShowEmojiPicker(false);
     setShowAttachmentMenu(false);
-
-    // Simulate contact typing reply
-    setTimeout(() => {
-      setIsTypingReply(true);
-      setTimeout(() => {
-        setIsTypingReply(false);
-      }, 1800);
-    }, 800);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

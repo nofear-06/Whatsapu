@@ -1,3 +1,14 @@
+export interface AppUser {
+  uid: string;
+  phoneNumber?: string;
+  email?: string;
+  displayName: string;
+  photoURL?: string;
+  about?: string;
+  lastSeen?: string;
+  isOnline?: boolean;
+}
+
 export interface Contact {
   id: string;
   name: string;
@@ -12,6 +23,8 @@ export interface Message {
   id: string;
   chatId: string;
   sender: 'me' | 'them';
+  senderId?: string;
+  receiverId?: string;
   text: string;
   timestamp: string;
   status: 'sending' | 'sent' | 'delivered' | 'read';
@@ -26,6 +39,7 @@ export interface Chat {
   unreadCount: number;
   isPinned?: boolean;
   isMuted?: boolean;
+  updatedAt?: any;
 }
 
 export interface StatusItem {
@@ -46,3 +60,7 @@ export interface CallItem {
 }
 
 export type WhatsAppTab = 'camera' | 'chats' | 'status' | 'calls';
+
+export function getDeterministicChatId(uidA: string, uidB: string): string {
+  return [uidA, uidB].sort().join('_');
+}

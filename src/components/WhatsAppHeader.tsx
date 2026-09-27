@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, MoreVertical, ArrowLeft, X, Users, Radio, Laptop, Star, Settings, CheckCheck, Moon, Sun } from 'lucide-react';
+import { Search, MoreVertical, ArrowLeft, X, Users, Radio, Laptop, Star, Settings, CheckCheck, Moon, Sun, LogOut } from 'lucide-react';
+import { AppUser } from '../types/whatsapp';
 
 interface WhatsAppHeaderProps {
   onSearchChange: (query: string) => void;
@@ -11,6 +12,8 @@ interface WhatsAppHeaderProps {
   onMarkAllRead: () => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
+  currentUser?: AppUser | null;
+  onSignOut?: () => void;
 }
 
 export const WhatsAppHeader: React.FC<WhatsAppHeaderProps> = ({
@@ -23,6 +26,8 @@ export const WhatsAppHeader: React.FC<WhatsAppHeaderProps> = ({
   onMarkAllRead,
   isDarkMode,
   toggleDarkMode,
+  currentUser,
+  onSignOut,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -223,6 +228,19 @@ export const WhatsAppHeader: React.FC<WhatsAppHeaderProps> = ({
                     <Settings className="w-4 h-4 opacity-70" />
                     <span>Settings</span>
                   </button>
+
+                  {onSignOut && (
+                    <button
+                      onClick={() => {
+                        setShowMenu(false);
+                        onSignOut();
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Log out</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>

@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   Key,
   Lock,
-  Smile,
   MessageCircle,
   Bell,
   HardDrive,
@@ -12,18 +11,24 @@ import {
   QrCode,
   Moon,
   Sun,
+  LogOut,
 } from 'lucide-react';
+import { AppUser } from '../types/whatsapp';
 
 interface SettingsModalProps {
   onClose: () => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
+  currentUser?: AppUser | null;
+  onSignOut?: () => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   isDarkMode,
   toggleDarkMode,
+  currentUser,
+  onSignOut,
 }) => {
   return (
     <div
@@ -56,16 +61,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-200">
             <img
-              src="/src/assets/images/avatar_leon_1790508448213.jpg"
-              alt="My Profile"
+              src={currentUser?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(currentUser?.displayName || 'User')}`}
+              alt={currentUser?.displayName || 'My Profile'}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">Alex Vance</h3>
+            <h3 className="text-lg font-semibold">{currentUser?.displayName || 'WhatsApp User'}</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Busy building awesome web apps ⚡
+              {currentUser?.phoneNumber || currentUser?.email || 'Active on WhatsApp'}
+            </p>
+            <p className="text-[11px] text-[#00a884] font-medium mt-0.5">
+              {currentUser?.about || 'Hey there! I am using WhatsApp.'}
             </p>
           </div>
         </div>
@@ -202,6 +210,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </p>
           </div>
         </button>
+
+        {onSignOut && (
+          <div className="px-5 pt-3 border-t border-gray-100 dark:border-white/5">
+            <button
+              onClick={() => {
+                onClose();
+                onSignOut();
+              }}
+              className="w-full py-2.5 px-4 rounded-xl bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 hover:bg-rose-100 flex items-center justify-center gap-2 text-sm font-semibold transition-colors cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Log Out of WhatsApp</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
