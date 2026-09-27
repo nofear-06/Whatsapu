@@ -74,10 +74,63 @@ export const ChatDetailView: React.FC<ChatDetailViewProps> = ({
     }
   };
 
+  const [swipeBackOffset, setSwipeBackOffset] = useState(0);
+  const [isSwipingBack, setIsSwipingBack] = useState(false);
+  const backPointerStartRef = useRef<{ x: number; y: number } | null>(null);
+  const backLockedRef = useRef<'horizontal' | 'vertical' | null>(null);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('input, textarea, button')) return;
+    backPointerStartRef.current = { x: e.clientX, y: e.clientY };
+    backLockedRef.current = null;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!backPointerStartRef.current) return;
+    const dx = e.clientX - backPointerStartRef.current.x;
+    const dy = e.clientY - backPointerStartRef.current.y;
+
+    if (backLockedRef.current === null) {
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+        if (dx > 0 && Math.abs(dx) > Math.abs(dy)) {
+          backLockedRef.current = 'horizontal';
+          setIsSwipingBack(true);
+        } else {
+          backLockedRef.current = 'vertical';
+        }
+      }
+    }
+
+    if (backLockedRef.current === 'horizontal' && dx > 0) {
+      setSwipeBackOffset(dx);
+    }
+  };
+
+  const handlePointerUp = () => {
+    if (backLockedRef.current === 'horizontal') {
+      if (swipeBackOffset > 100) {
+        onBack();
+      }
+    }
+    setSwipeBackOffset(0);
+    setIsSwipingBack(false);
+    backPointerStartRef.current = null;
+    backLockedRef.current = null;
+  };
+
   const quickEmojis = ['😊', '👍', '❤️', '😂', '🔥', '🎉', '🙏', '🙌', '✨', '👋'];
 
   return (
     <div
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      style={{
+        transform: `translate3d(${swipeBackOffset}px, 0, 0)`,
+        transition: isSwipingBack ? 'none' : 'transform 0.25s ease-out',
+      }}
       className={`absolute inset-0 z-40 flex flex-col transition-colors ${
         isDarkMode ? 'bg-[#0b141a]' : 'bg-[#EFEAE2]'
       }`}
