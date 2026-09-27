@@ -1,0 +1,6 @@
+{
+  "name": "WhatsApp Web - Chat Messenger",
+  "description": "Pixel-perfect mobile WhatsApp messenger application with live chat conversations, status stories, call logs, media sharing, and authentic classic Android styling.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
